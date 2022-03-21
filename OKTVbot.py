@@ -1,3 +1,6 @@
+#!/usr/bin/python3
+# -*- coding: UTF-8 -*-
+
 from socket import *
 from time import ctime
 import json
@@ -5,7 +8,6 @@ import ccxt
 import configparser
 import os
 import logging
-
 
 # 读取配置文件，优先读取json格式，如果没有就读取ini格式
 config = {}
@@ -23,7 +25,7 @@ else:
     exit()
 
 # 服务配置
-listenHost = config['service']['listen_host']
+# listenHost = config['service']['listen_host']
 debugMode = config['service']['debug_mode']
 
 # 交易所API账户配置
@@ -40,8 +42,9 @@ logging.basicConfig(filename='binance_trade.log', level=logging.INFO, format=LOG
 # logging.FileHandler(filename='okex_trade.log', encoding=)
 
 # 定义服务器名称
+HOST = config['service']['listen_host']
 BUFSIZE = 1024
-addr = (listenHost, 80)
+addr = (HOST, 80)
 
 # 定义服务器属性
 tcpsersock = socket(AF_INET, SOCK_STREAM)
@@ -79,10 +82,9 @@ while True:
         ret = json_data['side']
         print(ret)
         symbol = json_data['symbol']
-        amount = json_data['amount']
+        amount = config['trading']['amount']
         type = json_data['type']
         side = json_data['side']
-        price = json_data['price']
 
 
         binance = ccxt.binance(config={
@@ -101,7 +103,7 @@ while True:
         print(binance_balance_margin['USDT'])  # USDT这个资产的数量
 
         # 根据信号做多单，还是空单
-        create_order_info = binance.create_order(symbol, type, side, amount, price, params)
+        create_order_info = binance.create_order(symbol, type, side, amount, params={'type': 'future'})
         print(create_order_info)
 
         # 平仓信号
@@ -111,19 +113,19 @@ while True:
             fetch_order_side = fetch_order_info[0]['side']
             print(fetch_order_side)
             if fetch_order_side == 'BUY':
-                fetch_order_side = 'SELL'
-                tp_order_info = binance.create_order(symbol, type, fetch_order_side, fetch_order_info['amount'], price,
+                fetch_order_side = 'sell'
+                tp_order_info = binance.create_order(symbol, type, fetch_order_side, fetch_order_info['amount'],
                                                      params={'type': 'future'})
                 print(tp_order_info)
                 print('已经平多仓')
             elif fetch_order_side == 'SELL':
-                fetch_order_side = 'BUY'
-                tp_order_info = binance.create_order(symbol, type, fetch_order_side, fetch_order_info['amount'], price,
+                fetch_order_side = 'buy'
+                tp_order_info = binance.create_order(symbol, type, fetch_order_side, fetch_order_info['amount'],
                                                      params={'type': 'future'})
                 print(tp_order_info)
                 print('已经平空仓')
-        else:
-            print('没有执行平仓动作！')
+            else:
+                print('没有执行平仓动作！')
         # 加上时间戳后的信息发送，需要通过编码，以bytes的形式发送
         tcpcliscock.send(data_s)
     tcpcliscock.close()
