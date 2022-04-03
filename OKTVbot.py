@@ -1,133 +1,161 @@
-#!/usr/bin/python3
-# -*- coding: UTF-8 -*-
+# /usr/bin/python3
+# -*- coding: utf-8 -*-
 
-from socket import *
-from time import ctime
-import json
+from flask import Flask, request
 import ccxt
-import configparser
-import os
+import time
+import json
 import logging
+import os
 
-# 读取配置文件，优先读取json格式，如果没有就读取ini格式
-config = {}
-if os.path.exists('./config.json'):
-    config = json.load(open('./config.json', encoding="UTF-8"))
-elif os.path.exists('./config.ini'):
-    conf = configparser.ConfigParser()
-    conf.read("./config.ini", encoding="UTF-8")
-    for i in dict(conf._sections):
-        config[i] = {}
-        for j in dict(conf._sections[i]):
-            config[i][j] = conf.get(i, j)
-else:
-    logging.info("配置文件 config.json 不存在，程序即将退出")
-    exit()
+app = Flask(__name__)
 
-# 服务配置
-# listenHost = config['service']['listen_host']
-debugMode = config['service']['debug_mode']
 
-# 交易所API账户配置
-accountConfig = {
-    'apiKey': config['account']['api_key'],
-    'secret': config['account']['secret'],
-    'enableRateLimit': True
-}
+# order_side = ''
 
-# 格式化日志
-LOG_FORMAT = "%(pastime)s - %(levelness)s - %(message)s"
-DATE_FORMAT = "%Y/%m/%d/ %H:%M:%S %p"
-logging.basicConfig(filename='binance_trade.log', level=logging.INFO, format=LOG_FORMAT, datefmt=DATE_FORMAT)
-# logging.FileHandler(filename='okex_trade.log', encoding=)
 
-# 定义服务器名称
-HOST = config['service']['listen_host']
-BUFSIZE = 1024
-addr = (HOST, 80)
+@app.route('/')
+def hello_world():
+    return 'hello world'
 
-# 定义服务器属性
-tcpsersock = socket(AF_INET, SOCK_STREAM)
-tcpsersock.bind(addr)
-tcpsersock.listen(5)
 
-while True:
-    print('等待TradingView交易信号...，如果遇到问题，请加电报群：https://t.me/okbi_com')
-    tcpcliscock, adder = tcpsersock.accept()
-    print('...连接：', adder)
-    while True:
-        data = tcpcliscock.recv(BUFSIZE)
-        if not data:
-            break
-        print(data)
+@app.route('/trader', methods=['POST'])
+def trader():
+    global ex
+    data = request.get_data()
+    print(data)
+    data_utf_8 = data.decode('utf-8')
+    print(data_utf_8)
+    data_last_line = data_utf_8.split()[-1]
+    print(data_last_line)
+    json_data = json.loads(data_last_line)
+    print(json_data)
 
-        # 返回给请求机器的信息
-        data_send = {
-            "hello": "我已经收到你到信息了！"
-        }
-        data_s = json.dumps(data_send)
-        print(data_s)
-        data_s = data_s.encode()
-        print(data_s)
+    config = {}
+    if os.path.exists('./config.json'):
+        config = json.load(open('./config.json', encoding="UTF-8"))
+    else:
+        logging.info("配置文件 config.json 不存在，程序即将退出")
+        exit()
 
-        # 接收信息，由于接收到的信息是编码后的bytes信息，需要进行decode
-        # 开始处理对接交易所的逻辑
-        print(data)
-        data_utf_8 = data.decode('utf-8')
-        print(data_utf_8)
-        data_last_line = data_utf_8.split()[-1]
-        print(data_last_line)
-        json_data = json.loads(data_last_line)
-        print(json_data)
-        ret = json_data['side']
-        print(ret)
-        symbol = json_data['symbol']
-        amount = config['trading']['amount']
+    config_users = config['users']
+
+    symbol = json_data['symbol']
+    side = json_data['side']
+    position_amount = ''
+
+    try:
         type = json_data['type']
-        side = json_data['side']
+    except Exception as e:
+        print(str(e))
+
+    for key in config_users:
+        try:
+            api_key = config_users[key]['api_key']
+            api_secret = config_users[key]['api_secret']
+            exchange = config_users[key]['exchange']
+            password = config_users[key]['password']
+            bot_tv_safe_connect_key = config_users[key]['bot_tv_safe_connect_key']
+
+            if bot_tv_safe_connect_key != json_data['bot_tv_safe_connect_key']:
+                break
+            if json_data['author'] != 'https://t.me/okbi_com':
+                break
+            contract_type = {
+                'type': config_users[key]['contract_type']
+            }
+            # 交易所API账户配置
+            try:
+                if exchange == 'binance':
+                    ex = ccxt.binance({
+                        'apiKey': api_key,
+                        'secret': api_secret,
+                        'enableRateLimit': True
+                    })
+                elif exchange == 'okex':
+                    ex = ccxt.okex5(config={
+                        'enableRateLimit': True,
+                        'apiKey': api_key,
+                        'secret': api_secret,
+                        # okex requires this: https://github.com/ccxt/ccxt/wiki/Manual#authentication
+                        'password': password,
+                        'verbose': False,  # for debug output
+                    })
+                elif exchange == 'ftx':
+                    ex = ccxt.binance({
+                        'apiKey': api_key,
+                        'secret': api_secret,
+                        'enableRateLimit': True
+                    })
+                elif exchange == 'ftx':
+                    ex = ccxt.bitmex({
+                        'apiKey': api_key,
+                        'secret': api_secret,
+                        'enableRateLimit': True
+                    })
+            except Exception as e:
+                print(str(e))
+
+            # 观察自己合约账户的资金状况
+
+            ex_balance_margin = ex.fetch_balance(contract_type)
+            print(ex_balance_margin['USDT'])  # USDT这个资产的数量
+
+            if (side == 'buy') or (side == 'sell'):
+                #  根据信号做多单，还是空单
+                amount = config_users[key]['amount']
+                try:
+                    create_order_info = ex.create_order(symbol, type, side, amount, params=contract_type)
+                    print(create_order_info)
+                except Exception as e:
+                    time.sleep(1)
+                    print(str(e))
+                    try:
+                        create_order_info = ex.create_order(symbol, type, side, amount, params=contract_type)
+                        print(create_order_info)
+                    except Exception as e:
+                        print(str(e))
+                        try:
+                            create_order_info = ex.create_order(symbol, type, side, amount, params=contract_type)
+                            print(create_order_info)
+                        except Exception as e:
+                            print(str(e))
+
+            #  平仓信号
+            if side == 'TP':
+                j = 0
+                while j < 3:
+                    print('平仓 ', j)
+                    positionRisk = ex.fapiPrivateV2GetPositionRisk()
+                    for i in positionRisk:
+                        if i['symbol'] == 'BTCUSDT':
+                            print(i['positionAmt'])
+                            position_amount = i['positionAmt']
+                            continue
+                    print(position_amount)
+                    position_amount = float(position_amount)
+                    print(position_amount)
+                    if position_amount > float(0):
+                        side = 'sell'
+                    elif position_amount < float(0):
+                        side = 'buy'
+                        position_amount = abs(position_amount)
+                    else:
+                        print('空仓，没有平仓交易发生！')
+                    try:
+                        create_take_profit_order_info = ex.create_order(symbol, 'MARKET', side, position_amount,
+                                                                        params=contract_type)
+                        print(create_take_profit_order_info)
+                    except Exception as e:
+                        print(str(e))
+                    j = j + 1
+                    time.sleep(2)
+
+        except Exception as e:
+            print(str(e))
+
+    return 'cookout'
 
 
-        binance = ccxt.binance(config={
-            'apiKey': accountConfig['apiKey'],
-            'secret': accountConfig['secret'],
-            'enableRateLimit': True,
-        })
-
-        # 做的是永续合约future
-        params = {
-            'type': 'future'
-        }
-
-        # 观察自己合约账户的资金状况
-        binance_balance_margin = binance.fetch_balance({'type': 'future'})
-        print(binance_balance_margin['USDT'])  # USDT这个资产的数量
-
-        # 根据信号做多单，还是空单
-        create_order_info = binance.create_order(symbol, type, side, amount, params={'type': 'future'})
-        print(create_order_info)
-
-        # 平仓信号
-        if side == 'TP':
-            fetch_order_info = binance.fetch_orders(symbol, limit=1, params={'type': 'future'})
-            print(fetch_order_info)
-            fetch_order_side = fetch_order_info[0]['side']
-            print(fetch_order_side)
-            if fetch_order_side == 'BUY':
-                fetch_order_side = 'sell'
-                tp_order_info = binance.create_order(symbol, type, fetch_order_side, fetch_order_info['amount'],
-                                                     params={'type': 'future'})
-                print(tp_order_info)
-                print('已经平多仓')
-            elif fetch_order_side == 'SELL':
-                fetch_order_side = 'buy'
-                tp_order_info = binance.create_order(symbol, type, fetch_order_side, fetch_order_info['amount'],
-                                                     params={'type': 'future'})
-                print(tp_order_info)
-                print('已经平空仓')
-            else:
-                print('没有执行平仓动作！')
-        # 加上时间戳后的信息发送，需要通过编码，以bytes的形式发送
-        tcpcliscock.send(data_s)
-    tcpcliscock.close()
-
-tcpsersock.close()
+if __name__ == '__main__':
+    app.run(host='127.0.0.1', port=5000, debug=True)
