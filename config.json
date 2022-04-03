@@ -1,0 +1,18 @@
+{
+	"users": {
+		"user1": {
+			"api_key": "9oRr4JuiRCWaOnADosCCgXPh5sF3ntn87Oo7oNsPzWQ220QPJaAGwFH8EDV3oAHnEw",
+			"api_secret": "tEOdMQp4NUruuRhP9pzBPOvLHwuFbSSEnCwQFViCDMhbH7AeemSkuy65STXyaDiVzY",
+			"username": "myself",
+			"amount": "0.01",
+			"exchange": "binance",
+			"password": "123456",
+			"bot_tv_safe_connect_key": "123",
+			"contract_type": "future"
+		}
+	},
+	"service": {
+		"listen_host": "127.0.0.1",
+		"debug_mode": "True"
+	}
+}
