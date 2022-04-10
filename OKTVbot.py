@@ -136,14 +136,14 @@ def trader():
                     position_amount = float(position_amount)
                     print(position_amount)
                     if position_amount > float(0):
-                        side = 'sell'
+                        position_side = 'sell'
                     elif position_amount < float(0):
-                        side = 'buy'
+                        position_side = 'buy'
                         position_amount = abs(position_amount)
                     else:
                         print('空仓，没有平仓交易发生！')
                     try:
-                        create_take_profit_order_info = ex.create_order(symbol, 'MARKET', side, position_amount,
+                        create_take_profit_order_info = ex.create_order(symbol, 'MARKET', position_side, position_amount,
                                                                         params=contract_type)
                         print(create_take_profit_order_info)
                     except Exception as e:
