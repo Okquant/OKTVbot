@@ -43,6 +43,10 @@ def trader():
     author = 'https://t.me/okbi_com'
     amount = json_data['amount']
 
+    if simple_config['service']['password'] != json_data['password']:
+        print(str('您的安全码不对，无法为您执行'))
+        exit()
+
     if author != json_data['author']:
         print(str('您在TradingView发送的数据，为了尊重作者，请加上 https://t.me/okbi_com, 重起软件'))
         exit()
