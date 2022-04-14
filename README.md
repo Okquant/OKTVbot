@@ -12,4 +12,6 @@
 ### 建议用进程守护程序：
 ### supervisor 守护， 
 
+# 有问题，可以加入我们的电报群询问： https://t.me/okbi_com
+
 ## https://www.yuque.com/okbiquant/oktvbot
