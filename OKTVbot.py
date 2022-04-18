@@ -23,8 +23,8 @@ def trader():
     print(data)
     data_utf_8 = data.decode('utf-8')
     print(data_utf_8)
-    # data_last_line = data_utf_8.split()[-1]
-    # print(data_last_line)
+    data_last_line = data_utf_8.split()[-1]
+    print(data_last_line)
     json_data = json.loads(data_utf_8)
     print(json_data)
 
