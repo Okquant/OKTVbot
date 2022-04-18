@@ -23,9 +23,9 @@ def trader():
     print(data)
     data_utf_8 = data.decode('utf-8')
     print(data_utf_8)
-    data_last_line = data_utf_8.split()[-1]
-    print(data_last_line)
-    json_data = json.loads(data_last_line)
+    # data_last_line = data_utf_8.split()[-1]
+    # print(data_last_line)
+    json_data = json.loads(data_utf_8)
     print(json_data)
 
     simple_config = {}
@@ -36,7 +36,6 @@ def trader():
         exit()
 
     exchange = json_data['exchange']
-    exchange_type = json_data['exchange_type']
     symbol = json_data['symbol']
     side = json_data['side']
     position_amount = ''
@@ -76,6 +75,8 @@ def trader():
         else:
             print('交易所有错，没有这个交易所')
 
+        print(ex)
+
         if (side == 'buy') or (side == 'sell'):
             #  根据信号做多单，还是空单
             print('准备在：', exchange, '交易所，执行买入多单或者空单操作！')
@@ -85,7 +86,7 @@ def trader():
                 print('第 ', k, ' 次尝试买入交易！')
                 try:
                     create_order_info = ex.create_order(symbol, 'MARKET', side, amount,
-                                                        params={'type': exchange_type})
+                                                        params={'type': 'future'})
                     print(create_order_info)
                     if create_order_info:
                         print('已经成功下单，退出循环')
@@ -103,15 +104,15 @@ def trader():
             while j < 10:
                 print('第 ', j, ' 次尝试平仓！')
                 create_take_profit_order_info = {}
-                positionRisk = binance.fapiPrivateV2GetPositionRisk()
+                positionRisk = ex.fapiPrivateV2GetPositionRisk()
                 for i in positionRisk:
                     if i['symbol'] == 'BTCUSDT':
                         print(i['positionAmt'])
                         position_amount = i['positionAmt']
                         break
                 print(position_amount)
-                # position_amount = float(position_amount)
-                # print(position_amount)
+                position_amount = float(position_amount)
+                print(position_amount)
                 if position_amount > float(0):
                     position_side = 'sell'
                 elif position_amount < float(0):
@@ -121,15 +122,19 @@ def trader():
                     print('空仓，没有平仓交易发生！')
                     break
                 try:
-                    create_take_profit_order_info = binance.create_order(symbol, 'MARKET', position_side,
-                                                                         position_amount,
-                                                                         params={'type': exchange_type})
+                    position_amount = str(position_amount)
+                    print(type(position_amount))
+                    print(position_amount)
+                    create_take_profit_order_info = ex.create_order(symbol, 'MARKET', position_side,
+                                                                    position_amount,
+                                                                    params={'type': 'future'})
                     print(create_take_profit_order_info)
                     if create_take_profit_order_info:
                         break
                 except Exception as e:
                     print(str(e))
                 j = j + 1
+                time.sleep(1)
     except Exception as e:
         print(str(e))
 
@@ -137,4 +142,4 @@ def trader():
 
 
 if __name__ == '__main__':
-    app.run(host='10.1.60.3', port=80, debug=True)
+    app.run(host='127.0.0.1', port=5000, debug=True)
