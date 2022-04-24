@@ -1,4 +1,13 @@
-# OKTVbot
+# OKTVbot托管者使用方法：
+
+## linux系统的使用
+## 一 关闭防火墙
+## 二 打开3621端口
+## 三 下载托管者
+## 四 运行 
+### nohup ./oktvbot_v1 &
+# 即可
+
 ## 使用方法
 
 ## 专注于tradingview信号对接交易
@@ -12,13 +21,6 @@
 ### 五，author,这个是固定字段，不可删除更改，目的是为了尊重作者
 ### 六，password,安全码，要和simple_config.json里的password一致，可自己写一个其他人不知道的值。
 
-der
-
-### 已经更新安全机制
-
-### 建议用进程守护程序：
-### supervisor 守护， 
 
 # 有问题，可以加入我们的电报群询问： https://t.me/okbi_com
 
-## https://www.yuque.com/okbiquant/oktvbot
