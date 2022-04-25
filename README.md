@@ -2,8 +2,22 @@
 
 ## linux系统的使用
 ## 一 关闭防火墙
+
+（1）systemctl  status firewalld.service查看防火墙的状态；
+
+（3）systemctl  stop firewalld.service关闭防火墙；
+
+（6）systemctl  disable firewalld.service开机禁用防火墙；
+
+（7）systemctl  is-enabled firewalld.service查看防火墙是否开机启动；
+
 ## 二 打开3621端口
+
+各个服务器提供商打开的端口不进相同，默认全开的，个人使用多的服务商 www.henghost.com , www.jingdouyun.cn
+
 ## 三 下载托管者
+
+wegt https://github.com/OkbiQuant/OKTVbot/releases/download/v1.0.3/oktvbot_v1
 ## 四 运行 
 ### nohup ./oktvbot_v1 &
 # 即可
