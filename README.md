@@ -14,13 +14,21 @@
 
 ## 一、关闭防火墙
 
-（1）systemctl  status firewalld.service查看防火墙的状态；
+查看防火墙的状态
 
-（3）systemctl  stop firewalld.service关闭防火墙；
+systemctl  status firewalld.service
 
-（6）systemctl  disable firewalld.service开机禁用防火墙；
+关闭防火墙
 
-（7）systemctl  is-enabled firewalld.service查看防火墙是否开机启动；
+systemctl  stop firewalld.service
+
+开机禁用防火墙
+
+systemctl  disable firewalld.service
+
+查看防火墙是否开机启动
+
+systemctl  is-enabled firewalld.service
 
 ## 二、打开3621端口
 
