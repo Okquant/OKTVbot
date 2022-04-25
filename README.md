@@ -18,6 +18,8 @@
 ## 三 下载托管者
 
 wget https://github.com/OkbiQuant/OKTVbot/releases/download/v1.0.3/oktvbot_v1
+打开托管者权限
+chmod 777 oktvbot_v1
 ## 四 运行 
 ### nohup ./oktvbot_v1 &
 # 即可
