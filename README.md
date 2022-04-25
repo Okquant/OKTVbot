@@ -51,7 +51,7 @@ chmod 777 oktvbot_v1
 一 用 alert()函数消息格式：
 {exchange":"binance","symbol":"BTCUSDT","side":"sell","amount":"0.01","robot_number":"100340","user_security_code": "xxxxxx"}
 二 用函数的参数做警报的commet参数：（反斜杆是转义字符）
-{\"exchange\":\"binance\",\"symbol\":\"BTCUSDT\",\"side\":\"buy\",\"amount\":\"0.15\",\"robot_number\":\"100000\",\"user_security_code\": \"official_robot\"}
+{\"exchange\":\"binance\",\"symbol\":\"BTCUSDT\",\"side\":\"buy\",\"amount\":\"0.15\",\"robot_number\":\"544578\",\"user_security_code\": \"xxxxxx\"}
 
 tradingView的webhook URL格式，统一 http://www.okbi.com/signalman
 
