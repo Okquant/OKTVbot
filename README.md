@@ -6,7 +6,7 @@
 
 自己选择一个linux服务器，对服务器的配置要求不高，1G内存、1核心、2M带宽配置即可，但是要稳定，安装centOS7以上，推荐centOS7.6 64位
 
-可以考虑服务商 www.henghost.com , www.jingdouyun.cn
+服务商 www.henghost.com , www.jingdouyun.cn ,阿里云、百度智能云、腾讯云、华为云等等都可以。
 
 ## linux系统的使用
 
