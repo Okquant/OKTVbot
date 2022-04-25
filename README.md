@@ -12,7 +12,7 @@
 
 使用服务商自带的VNC连接服务器即可，操作简单。
 
-## 一 关闭防火墙
+## 一、关闭防火墙
 
 （1）systemctl  status firewalld.service查看防火墙的状态；
 
@@ -22,12 +22,12 @@
 
 （7）systemctl  is-enabled firewalld.service查看防火墙是否开机启动；
 
-## 二 打开3621端口
+## 二、打开3621端口
 
 各个服务器提供商安全组，默认打开的端口不尽相同。
 默认端口全开服务商 www.henghost.com , www.jingdouyun.cn ，可以参考使用
 
-## 三 下载托管者
+## 三、下载托管者
 
 安装 wget
 
@@ -40,7 +40,7 @@ wget https://github.com/OkbiQuant/OKTVbot/releases/download/v1.0.3/oktvbot_v1
 
 chmod 777 oktvbot_v1
 
-## 四 运行 
+## 四、运行 
 ### nohup ./oktvbot_v1 &
 
 有提示，回车就可以
