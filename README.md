@@ -44,6 +44,8 @@ chmod 777 oktvbot_v1
 提示 ：I am online
 说明托管者已经在线了。
 
+联系UP主，把托管者的IP发给UP主，第一版本麻烦点，下个版本，就可以自己提交到网站了
+
 ## 使用方法
 
 ## 专注于tradingview信号对接交易
