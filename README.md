@@ -1,5 +1,10 @@
 # 好币量化托管者使用方法：
 
+## 购买服务器
+
+自己选择一个linux服务器，对服务器的配置要求不高，但是要稳定，安装centOS7以上，推荐centOS7.6 64位
+可以考虑服务商 www.henghost.com , www.jingdouyun.cn
+
 ## linux系统的使用
 ## 一 关闭防火墙
 
@@ -13,7 +18,8 @@
 
 ## 二 打开3621端口
 
-各个服务器提供商打开的端口不进相同，默认全开的，个人使用多的服务商 www.henghost.com , www.jingdouyun.cn
+各个服务器提供商安全组，默认打开的端口不尽相同。
+默认端口全开服务商 www.henghost.com , www.jingdouyun.cn ，可以参考使用
 
 ## 三 下载托管者
 
