@@ -2,11 +2,14 @@
 
 ## 购买服务器
 
-自己选择一个linux服务器，对服务器的配置要求不高，但是要稳定，安装centOS7以上，推荐centOS7.6 64位
+自己选择一个linux服务器，对服务器的配置要求不高，1G内存、1核心、2M带宽配置即可，但是要稳定，安装centOS7以上，推荐centOS7.6 64位
 
 可以考虑服务商 www.henghost.com , www.jingdouyun.cn
 
 ## linux系统的使用
+
+使用服务商自带的VNC连接服务器即可，操作简单。
+
 ## 一 关闭防火墙
 
 （1）systemctl  status firewalld.service查看防火墙的状态；
