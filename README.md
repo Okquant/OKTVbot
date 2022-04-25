@@ -17,7 +17,7 @@
 
 ## 三 下载托管者
 
-wegt https://github.com/OkbiQuant/OKTVbot/releases/download/v1.0.3/oktvbot_v1
+wget https://github.com/OkbiQuant/OKTVbot/releases/download/v1.0.3/oktvbot_v1
 ## 四 运行 
 ### nohup ./oktvbot_v1 &
 # 即可
