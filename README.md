@@ -33,7 +33,7 @@ systemctl  is-enabled firewalld.service
 ## 二、打开3621端口
 
 各个服务器提供商安全组，默认打开的端口不尽相同。
-默认端口全开服务商 www.henghost.com , www.jingdouyun.cn ，可以参考使用
+默认端口全开服务商 www.henghost.com , 可以参考使用
 
 ## 三、下载托管者
 
