@@ -18,11 +18,19 @@
 ## 三 下载托管者
 
 wget https://github.com/OkbiQuant/OKTVbot/releases/download/v1.0.3/oktvbot_v1
+
 打开托管者权限
 chmod 777 oktvbot_v1
+
 ## 四 运行 
 ### nohup ./oktvbot_v1 &
+有提示，回车就可以
 # 即可
+
+检测托管者是否在线的方法
+浏览器输入 x.x.x.x:3621   (您的IP+端口)
+提示 ：I am online
+说明托管者已经在线了。
 
 ## 使用方法
 
