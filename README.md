@@ -27,7 +27,12 @@
 
 ## 三 下载托管者
 
+安装 wget
+
+yum -y install wget
+
 wget https://github.com/OkbiQuant/OKTVbot/releases/download/v1.0.3/oktvbot_v1
+
 
 打开托管者权限
 
